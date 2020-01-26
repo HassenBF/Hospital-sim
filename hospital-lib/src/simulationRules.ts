@@ -1,37 +1,40 @@
-import {ConditionsAndDrugInteractionsRules} from "./simulationRules.model";
+import {AvailableDrugs, ConditionsAndDrugInteractionsRules, HealthStates} from "./simulationRules.model";
 
 export class SimulationRules {
 
     static readonly rules: ConditionsAndDrugInteractionsRules = {
         lethalDrugInteractions: [
-            {drugs: ['ASPIRIN', 'PARACETAMOL'], result: 'DEATH'}
+            {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]},
+            {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
         ],
         healthConditionsTreatments: [
             {
-                patientInitialState: 'HEALTHY',
+                patientInitialState: HealthStates.HEALTHY,
                 treatments: [
-                    {drugs: ['INSULIN', 'ANTIBIOTIC'], result: 'FEVER'}
+                    {drugsCombination: [AvailableDrugs.INSULIN, AvailableDrugs.ANTIBIOTIC], result: HealthStates.FEVER}
                 ],
             },
             {
-                patientInitialState: 'FEVER',
+                patientInitialState: HealthStates.FEVER,
                 treatments: [
-                    {drugs: ['ASPIRIN'], result: 'HEALTHY'},
-                    {drugs: ['PARACETAMOL'], result: 'HEALTHY'}
+                    {drugsCombination: [AvailableDrugs.ASPIRIN], result: HealthStates.HEALTHY},
+                    {drugsCombination: [AvailableDrugs.PARACETAMOL], result: HealthStates.HEALTHY}
                 ]
             },
             {
-                patientInitialState: 'TUBERCULOSIS',
+                patientInitialState: HealthStates.TUBERCULOSIS,
                 treatments: [
-                    {drugs: ['ANTIBIOTIC'], result: 'HEALTHY'}
+                    {drugsCombination: [AvailableDrugs.ANTIBIOTIC], result: HealthStates.HEALTHY}
                 ]
             },
             {
-                patientInitialState: 'DIABETES',
+                patientInitialState: HealthStates.DIABETES,
                 treatments: [
-                    {drugs: ['INSULIN'], result: 'DIABETES'}
+                    {drugsCombination: [AvailableDrugs.INSULIN], result: HealthStates.DIABETES}
                 ],
-                mandatoryTreatments: ['INSULIN']
+                mandatoryTreatments: [
+                    {drugsCombination: [AvailableDrugs.INSULIN]}
+                ]
             }
 
         ]
