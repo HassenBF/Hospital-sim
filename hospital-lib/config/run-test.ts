@@ -1,6 +1,7 @@
 import {TapBark} from 'tap-bark';
 import {TestRunner, TestSet} from 'alsatian';
 
+// @ts-ignore
 (async () => {
   const testSet = TestSet.create();
   testSet.addTestsFromFiles('./src/**/*.spec.ts');
