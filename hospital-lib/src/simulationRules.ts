@@ -5,7 +5,7 @@ export class SimulationRules {
     static readonly rules: ConditionsAndDrugInteractionsRules = {
         lethalDrugInteractions: [
             {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]},
-            {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
+            {drugsCombination: [AvailableDrugs.ANTIBIOTIC, AvailableDrugs.PARACETAMOL]}
         ],
         healthConditionsTreatments: [
             {

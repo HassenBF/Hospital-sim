@@ -37,6 +37,6 @@ export interface HealthConditionTreatment {
 
 
 export interface ConditionsAndDrugInteractionsRules {
-    lethalDrugInteractions:DrugsCombination[],
+    lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
     healthConditionsTreatments:HealthConditionTreatment[]
 }
