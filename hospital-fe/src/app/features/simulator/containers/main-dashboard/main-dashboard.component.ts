@@ -19,8 +19,9 @@ export class MainDashboardComponent implements OnInit {
   //private drugsList = 'An,P';
   //private listSeparator = ',';
 
-  private preTreatmentPatients: PatientsRegister = {D: 2, T: 3, F: 2};
-  private usedDrugs: Drug[] = [''];
+  private preTreatmentPatients: PatientsRegister = {D: 2, T: 3, F: 2,H:10};
+  private postTreatmentPatients: PatientsRegister = {};
+  private usedDrugs: Drug[] = ['An','As','I'];
   private readonly SIMULATION_RULES = SimulationRules.rules;
 
 
@@ -28,7 +29,7 @@ export class MainDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('executioin result', this.isLethalDrugCombination());
+    //console.log('executioin result', this.isLethalDrugCombination());
     this.applyDrugs();
   }
 
@@ -51,7 +52,7 @@ export class MainDashboardComponent implements OnInit {
 
   public isThereMatchingRules(ruleSet: Drug[], usedDrugs?: Drug[]): boolean {
     return ruleSet.every((drugInRuleSet) => {
-      console.log(`does ${drugInRuleSet} exist in ${this.usedDrugs} `, this.usedDrugs.indexOf(drugInRuleSet) >= 0);
+      //console.log(`does ${drugInRuleSet} exist in ${this.usedDrugs} `, this.usedDrugs.indexOf(drugInRuleSet) >= 0);
       return usedDrugs.indexOf(drugInRuleSet) >= 0;
     });
 
@@ -75,21 +76,6 @@ export class MainDashboardComponent implements OnInit {
     return {...preTreatmentPatients, 'D': total}
   }
 
-
-  // public transitionPatientsState(oldHealthState: State,healthState: State, preTreatmentPatients: PatientsRegister): PatientsRegister {
-  //   return Object.keys(preTreatmentPatients).forEach((healthState)=>{
-  //     if (preTreatmentPatients[healthState]){
-  //       preTreatmentPatients[healthState]+ = preTreatmentPatients[oldHealthState];
-  //       pr
-  //     }else {
-  //       preTreatmentPatients[]
-  //     }
-  //
-  //   })
-  //
-  // }
-
-
   public getTreatmentResult(healthConditionTreatment: HealthConditionTreatment): State {
     const treatmentResult = healthConditionTreatment.treatments.find((treatment, index) => {
       return this.isThereMatchingRules(treatment.drugsCombination, this.usedDrugs);
@@ -106,20 +92,51 @@ export class MainDashboardComponent implements OnInit {
     return healthConditionTreatment.patientInitialState;
   }
 
+  public switchState(oldHealthState: State,
+                     newHealthState: State,
+                     patients: PatientsRegister,
+                     postTreatmentPatients:PatientsRegister):PatientsRegister {
+
+
+    postTreatmentPatients[newHealthState] ?
+      postTreatmentPatients[newHealthState] += patients[oldHealthState] :
+      postTreatmentPatients[newHealthState] = patients[oldHealthState];
+
+    console.log('inside the switchState',postTreatmentPatients);
+
+    return  postTreatmentPatients;
+  }
+
   public applyDrugs() {
     //checking if administrated drug mix is not deadly
     if (this.isLethalDrugCombination()) {
+       console.log('warining lethal drug combination');
       //console.log(('everyone is dead', this.transitionPatientsState('X',this.preTreatmentPatients)))
     }
+
+    console.log('Pre treatment patients', this.preTreatmentPatients);
+    console.log('Drugs used', this.usedDrugs);
 
     //  loop to check if there are any drug rules applicable for current patients object
     Object.keys(this.preTreatmentPatients).forEach((healthState, nbOfPatients) => {
       const healthStateRulesIndex = this.getCorrespondingTreatmentsIndex(healthState as State);
-      console.log(`******************checking ${healthState} patients now`);
-      const TreatmentResult = this.getTreatmentResult(this.SIMULATION_RULES.healthConditionsTreatments[healthStateRulesIndex]);
-      console.log(`${healthState} patients new state = `, TreatmentResult);
-      // this.transitionPatientsState(healthState,TreatmentResult,this.preTreatmentPatients);
-      console.log('newwwww states',this.preTreatmentPatients);
+      let newPatientState ;
+      console.log(`1) checking ${healthState} patients now`);
+
+        // there's a rule matching !
+        const TreatmentResult = this.getTreatmentResult(this.SIMULATION_RULES.healthConditionsTreatments[healthStateRulesIndex]);
+        console.log(`2) ${healthState} patients changed state to `, TreatmentResult);
+      // No corresponding rule found
+      if (TreatmentResult === healthState) {
+        // no change  of state
+        this.postTreatmentPatients[healthState] = this.preTreatmentPatients[healthState];
+        console.log(`3-a) no change to patient state return normal state `);
+      } else {
+        newPatientState = this.switchState(healthState as State, TreatmentResult, this.preTreatmentPatients,this.postTreatmentPatients);
+        console.log(`3-b) ${healthState} Patient state changed to ${newPatientState} `);
+        this.postTreatmentPatients = {...this.postTreatmentPatients, ...newPatientState};
+      }
+      console.log('4) results after itération ', this.postTreatmentPatients);
 
     })
 
