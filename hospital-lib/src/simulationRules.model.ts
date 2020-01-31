@@ -13,13 +13,8 @@ export enum AvailableDrugs {
     'PARACETAMOL' = 'P',
 }
 
-type ValueOf<T> = T[keyof T];
-
  export type State = 'H'|'F'|'T'|'D'|'X';
  export type Drug = 'As'|'An'|'I'|'P';
-
-// export type State = keyof typeof HealthStates;
-// export type Drug = keyof typeof AvailableDrugs;
 
 export interface DrugsCombination {
     drugsCombination: Drug [],
@@ -29,7 +24,7 @@ export interface Treatment extends DrugsCombination{
     result: State
 }
 
-export interface HealthConditionTreatment {
+export interface HealthConditionRuleSet {
     patientInitialState: State,
     treatments: Treatment [],
     mandatoryTreatments?: DrugsCombination []  // result in death if not administrated
@@ -38,5 +33,5 @@ export interface HealthConditionTreatment {
 
 export interface ConditionsAndDrugInteractionsRules {
     lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
-    healthConditionsTreatments:HealthConditionTreatment[]
+    healthConditionsTreatments:HealthConditionRuleSet[]
 }
