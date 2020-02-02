@@ -1,1 +1,9 @@
-<p>main-dashboard works!</p>
+<div class="main-dashboard-container">
+  <app-control-panel (getDrugsAndPatients)="getSimulationData()"
+                     (administerDrugs)="runSimulation()"
+  (toggleAutoSimulation)="startStopAutoSimulation()">
+  </app-control-panel>
+
+  <app-simulations-list></app-simulations-list>
+</div>
+

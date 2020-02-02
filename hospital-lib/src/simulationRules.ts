@@ -1,12 +1,12 @@
-import {AvailableDrugs, ConditionsAndDrugInteractionsRules, HealthStates} from "./simulationRules.model";
+import {AvailableDrugs, HealthStatesAndDrugInteractionsRules, HealthStates} from "./simulationRules.model";
 
 export class SimulationRules {
 
-    static readonly rules: ConditionsAndDrugInteractionsRules = {
+    static readonly rules: HealthStatesAndDrugInteractionsRules = {
         lethalDrugInteractions: [
             {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
         ],
-        healthConditionsTreatments: [
+        healthStatesRuleSets: [
             {
                 patientInitialState: HealthStates.HEALTHY,
                 treatments: [
@@ -34,7 +34,11 @@ export class SimulationRules {
                 mandatoryTreatments: [
                     {drugsCombination: [AvailableDrugs.INSULIN]}
                 ]
-            }
+            },
+            {
+                patientInitialState: HealthStates.DEAD,
+                treatments: [],
+            },
 
         ]
 

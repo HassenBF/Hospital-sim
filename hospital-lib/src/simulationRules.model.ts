@@ -1,9 +1,11 @@
+import {PatientsRegister} from "./patientsRegister";
+
 export enum HealthStates {
     'HEALTHY' = 'H',
     'FEVER' = 'F',
     'TUBERCULOSIS' = 'T',
     'DIABETES' = 'D',
-    'DEATH' = 'X',
+    'DEAD' = 'X',
 }
 
 export enum AvailableDrugs {
@@ -24,14 +26,21 @@ export interface Treatment extends DrugsCombination{
     result: State
 }
 
-export interface HealthConditionRuleSet {
+export interface HealthStateRuleSet {
     patientInitialState: State,
     treatments: Treatment [],
     mandatoryTreatments?: DrugsCombination []  // result in death if not administrated
 }
 
 
-export interface ConditionsAndDrugInteractionsRules {
+export interface HealthStatesAndDrugInteractionsRules {
     lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
-    healthConditionsTreatments:HealthConditionRuleSet[]
+    healthStatesRuleSets:HealthStateRuleSet[]
+}
+
+export interface SimulationSession {
+    preTreatmentHealthState:State;
+    postTreatmentHealthState:State;
+    preTreatmentPatients:PatientsRegister;
+    postTreatmentPatients:PatientsRegister;
 }

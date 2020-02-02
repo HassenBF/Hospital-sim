@@ -5,6 +5,9 @@ import {MainDashboardComponent} from './containers/main-dashboard/main-dashboard
 import {SimulationsListComponent} from './components/simulations-list/simulations-list.component';
 import {ListElementComponent} from './components/simulations-list/list-element/list-element.component';
 import {ControlPanelComponent} from './components/control-panel/control-panel.component';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatButtonModule} from "@angular/material/button";
+import {ReactiveFormsModule} from "@angular/forms";
 
 const routes: Routes = [
   {
@@ -17,6 +20,9 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    MatSlideToggleModule,
+    MatButtonModule,
+    ReactiveFormsModule,
   ],
   declarations: [
 
