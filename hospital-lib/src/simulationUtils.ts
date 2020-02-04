@@ -112,15 +112,4 @@ export class SimulationUtils {
 
         return postTreatmentPatients;
     }
-
-    /**
-     * Generate an object with patients health states post treatment
-     *
-     * @returns {PatientsRegister} Object with post treatment patients
-     * @param preTreatmentHealthState
-     * @param postTreatmentHealthState
-     * @param preTreatmentPatients
-     * @param postTreatmentPatients
-     */
-
 }

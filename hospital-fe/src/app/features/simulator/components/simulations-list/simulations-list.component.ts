@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {PatientsRegister} from "../../../../../../../hospital-lib/src";
 import {Drug} from "../../../../../../../hospital-lib/src/simulationRules.model";
+import {SimulationHistory, SimulationResults} from '../../../../shared/models/simulator.model';
 
 @Component({
   selector: 'app-simulations-list',
@@ -9,7 +10,7 @@ import {Drug} from "../../../../../../../hospital-lib/src/simulationRules.model"
 })
 export class SimulationsListComponent implements OnInit,OnChanges {
 
-  @Input() simulationHistory = [];
+  @Input() simulationHistory: SimulationResults[] ;
 
   constructor() { }
 

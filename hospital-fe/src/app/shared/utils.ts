@@ -1,5 +1,4 @@
-
-import {Drug, PatientsRegister, Simulation, State} from "./models/simulator.model";
+import {Drug, PatientsRegister, SimulationHistory, SimulationResults, State} from './models/simulator.model';
 
 export class Utils {
   static parseToPatientsRegister(patientsStringList: string, separator: string): PatientsRegister {
@@ -11,18 +10,15 @@ export class Utils {
       }, {} as PatientsRegister)
   };
 
-
   static parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients: PatientsRegister, usedDrugs: Drug[]) {
-    let simulation : Simulation = {usedDrugs:null,simulationResults:null};
-    let tmpArray = [];
+    let simulation = {usedDrugs: [], results: []};
     Object.keys({...preTreatmentPatients, ...postTreatmentPatients}).forEach((state: State) => {
-      tmpArray.push(
+      simulation.results.push(
         {
           healthState: state,
           preTreatment: preTreatmentPatients[state] ? preTreatmentPatients[state] : 0,
           postTreatment: postTreatmentPatients[state] ? postTreatmentPatients[state] : 0,
         });
-      simulation.simulationResults = tmpArray;
     });
     simulation.usedDrugs = usedDrugs;
     return simulation;

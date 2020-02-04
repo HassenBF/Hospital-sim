@@ -8,6 +8,7 @@ import {ControlPanelComponent} from './components/control-panel/control-panel.co
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatButtonModule} from "@angular/material/button";
 import {ReactiveFormsModule} from "@angular/forms";
+import {MatTableModule} from '@angular/material/table';
 
 const routes: Routes = [
   {
@@ -17,13 +18,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatSlideToggleModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatSlideToggleModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        MatTableModule,
+    ],
   declarations: [
 
     MainDashboardComponent,

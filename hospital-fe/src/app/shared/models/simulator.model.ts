@@ -47,9 +47,9 @@ export interface SimulationSession {
   postTreatmentPatients: PatientsRegister;
 }
 
-export interface Simulation {
+export interface SimulationResults {
   usedDrugs: Drug[],
-  simulationResults: [
+  results: [
     {
       healthState: State,
       preTreatment: number,
@@ -57,3 +57,5 @@ export interface Simulation {
     }
   ]
 }
+
+
