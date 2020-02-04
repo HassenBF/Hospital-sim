@@ -44,3 +44,8 @@ export interface SimulationSession {
     preTreatmentPatients:PatientsRegister;
     postTreatmentPatients:PatientsRegister;
 }
+
+export interface DisplayElement {
+    usedDrugs : Drug[],
+    sim : [{state:State, pre:number, post:number}]
+}

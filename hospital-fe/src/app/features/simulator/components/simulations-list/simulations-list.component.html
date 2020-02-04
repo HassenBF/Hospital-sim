@@ -1,4 +1,19 @@
-<div>Health state</div>
-<div>Number of patients pre-simulation</div>
-<div>Number of patients pre-simulation</div>
-<div>drugs used </div>
+<table>
+  <thead>
+  <tr>
+    <th>Health state</th>
+    <th>pre-simulation</th>
+    <th>post-simulation</th>
+    <th>drugs used </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let simulation of simulationHistory">
+    <td>simulation.state</td>
+    <td>with two columns</td>
+    <td></td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+

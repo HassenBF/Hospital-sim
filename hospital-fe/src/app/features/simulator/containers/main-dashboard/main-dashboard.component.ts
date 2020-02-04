@@ -1,18 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {SimulationRules} from '../../../../../../../hospital-lib/src/simulationRules';
-import {
-  Drug, DrugsCombination, HealthStateRuleSet,
-  HealthStates,
-  State,
-  Treatment
-} from '../../../../../../../hospital-lib/src/simulationRules.model';
-import {PatientsRegister, Quarantine} from '../../../../../../../hospital-lib/src';
-import {SimulationUtils} from "../../../../../../../hospital-lib/src/simulationUtils";
+
 import {SimulationDataService} from "../../../../core/services/simulation-data.service";
-import {map, mergeMap, startWith, subscribeOn, switchMap} from "rxjs/operators";
-import {forkJoin, interval, Observable, of} from "rxjs";
+import {map} from "rxjs/operators";
+import {forkJoin, Observable} from "rxjs";
 import {environment} from "../../../../../environments/environment";
 import {Utils} from "../../../../shared/utils";
+import {Drug, PatientsRegister} from "../../../../shared/models/simulator.model";
+import {Quarantine} from "../../../../../../../hospital-lib/src";
 
 @Component({
   selector: 'app-main-dashboard',
@@ -23,8 +17,10 @@ export class MainDashboardComponent implements OnInit {
 
   private listSeparator = ',';
   private preTreatmentPatients: PatientsRegister = {};
+  private postTreatmentPatients: PatientsRegister = {};
   private usedDrugs: Drug[] = [];
   private autoRefreshInterval = environment.autoRefreshInterval;
+  private simulationHistory = [];
 
   constructor(private simulationService: SimulationDataService) {}
 
@@ -33,7 +29,7 @@ export class MainDashboardComponent implements OnInit {
   getPatients(): Observable<PatientsRegister> {
     return this.simulationService.getPatients()
       .pipe(
-        map((patients) => Utils.parsePatientsList(patients, this.listSeparator) as PatientsRegister)
+        map((patients) => Utils.parseToPatientsRegister(patients, this.listSeparator) as PatientsRegister)
       )
   }
 
@@ -61,7 +57,8 @@ export class MainDashboardComponent implements OnInit {
     const quarantine = new Quarantine(this.preTreatmentPatients);
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
-    quarantine.report();
+    this.postTreatmentPatients = quarantine.report();
+    this.simulationHistory.push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs));
   }
 
   public startStopAutoSimulation(): void {

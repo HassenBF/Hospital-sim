@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {PatientsRegister} from "../../../../../../../hospital-lib/src";
 import {Drug} from "../../../../../../../hospital-lib/src/simulationRules.model";
 
@@ -7,15 +7,16 @@ import {Drug} from "../../../../../../../hospital-lib/src/simulationRules.model"
   templateUrl: './simulations-list.component.html',
   styleUrls: ['./simulations-list.component.scss']
 })
-export class SimulationsListComponent implements OnInit {
+export class SimulationsListComponent implements OnInit,OnChanges {
 
-  @Input() preTreatmentPatients: PatientsRegister;
-  @Input() postTreatmentPatients: PatientsRegister;
-  @Input() usedDrugs: Drug[];
+  @Input() simulationHistory = [];
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  ngOnChanges(): void {
+    console.log(this.simulationHistory);
+  }
 }
