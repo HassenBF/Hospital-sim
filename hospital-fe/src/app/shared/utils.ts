@@ -14,14 +14,14 @@ export class Utils {
       }, {} as PatientsRegister)
   };
 
-  static parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients: PatientsRegister, usedDrugs: Drug[]) {
+  static parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients?: PatientsRegister, usedDrugs: Drug[]) {
     let simulation = {usedDrugs: [], results: []};
     Object.keys({...preTreatmentPatients, ...postTreatmentPatients}).forEach((state: State) => {
       simulation.results.push(
         {
           healthState: state,
-          preTreatment: preTreatmentPatients[state] ? preTreatmentPatients[state] : 0,
-          postTreatment: postTreatmentPatients[state] ? postTreatmentPatients[state] : 0,
+          preTreatment: preTreatmentPatients[state] ? preTreatmentPatients[state] : '-',
+          postTreatment: postTreatmentPatients[state] ? postTreatmentPatients[state] : '-',
         });
     });
     simulation.usedDrugs = usedDrugs;
@@ -30,7 +30,6 @@ export class Utils {
 
   static limitSimulationHistory(simulationHistory: SimulationResults[]):SimulationResults []{
     if (simulationHistory.length >= this.historySize ){
-      // shift instead of pop since we show the array in reverse order
       simulationHistory.shift() ;
     }
     return simulationHistory;

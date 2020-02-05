@@ -3,17 +3,12 @@ import {
     DrugsCombination,
     HealthStateRuleSet,
     HealthStates,
-    SimulationSession,
+    HealthStatesAndDrugInteractionsRules,
     State
-} from "./simulationRules.model";
-import {PatientsRegister} from "./patientsRegister";
-import {SimulationRules} from "./simulationRules";
+} from './simulationRules.model';
+import {PatientsRegister} from './patientsRegister';
 
 export class SimulationUtils {
-
-    private readonly SIM_RULES = SimulationRules.rules;
-    private usedDrugs: Drug[];
-    private  simulationSession: SimulationSession;
 
     /**
      * Gets index of drugs combination rules corresponding to the healthState in parameters
@@ -86,9 +81,14 @@ export class SimulationUtils {
      * @param preTreatmentPatients
      */
     static everyoneIsDead(preTreatmentPatients: PatientsRegister): PatientsRegister {
-        const numberOfPatients = Object.keys(preTreatmentPatients)
-            .reduce((totalNbOfPatients, patientState) => totalNbOfPatients + preTreatmentPatients[patientState], 0);
-        return {[HealthStates.DEAD]: numberOfPatients}
+        preTreatmentPatients[HealthStates.DEAD] = Object.keys(preTreatmentPatients)
+                .reduce((totalNbOfPatients, patientState) => {
+                        totalNbOfPatients += preTreatmentPatients[patientState];
+                        preTreatmentPatients[patientState] = 0;
+                        return totalNbOfPatients;
+                    }
+                    , 0);
+        return preTreatmentPatients
     }
 
     /**
@@ -106,10 +106,33 @@ export class SimulationUtils {
                                preTreatmentPatients: PatientsRegister,
                                postTreatmentPatients: PatientsRegister): PatientsRegister {
 
+        //TODO check dis nullify
+        postTreatmentHealthState[preTreatmentHealthState] = 0;
         postTreatmentPatients[postTreatmentHealthState] ?
             postTreatmentPatients[postTreatmentHealthState] += preTreatmentPatients[preTreatmentHealthState] :
             postTreatmentPatients[postTreatmentHealthState] = preTreatmentPatients[preTreatmentHealthState];
 
+
+
         return postTreatmentPatients;
     }
+
+
+    static treatPatients(preTreatmentPatients: PatientsRegister,
+                         postTreatmentPatients: PatientsRegister,
+                         usedDrugs: Drug[],
+                         simRules:HealthStatesAndDrugInteractionsRules) : PatientsRegister{
+        Object.keys(preTreatmentPatients).forEach((preTreatmentHealthState: State) => {
+            // Index of rules (in rules table) corresponding to current patients healthState.
+            const healthStateRulesIndex = SimulationUtils.getCorrespondingRulesIndex(preTreatmentHealthState, simRules.healthStatesRuleSets);
+            const correspondingRuleSet = simRules.healthStatesRuleSets[healthStateRulesIndex];
+            const postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(correspondingRuleSet, usedDrugs);
+            // building post treatment patients object
+            postTreatmentPatients = SimulationUtils.switchPatientsState(
+                preTreatmentHealthState, postTreatmentHealthState, preTreatmentPatients, postTreatmentPatients)
+        });
+        return postTreatmentPatients;
+    }
+
+
 }
