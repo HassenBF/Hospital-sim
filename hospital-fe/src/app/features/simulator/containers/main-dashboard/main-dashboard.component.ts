@@ -58,7 +58,9 @@ export class MainDashboardComponent implements OnInit {
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
     this.postTreatmentPatients = quarantine.report();
-    this.simulationHistory.push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs));
+    Utils.limitSimulationHistory(this.simulationHistory);
+    this.simulationHistory
+      .push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs));
   }
 
   public startStopAutoSimulation(): void {

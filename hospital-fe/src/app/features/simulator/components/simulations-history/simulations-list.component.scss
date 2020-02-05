@@ -14,10 +14,12 @@ div {
   max-width: 600px;
 }
 
+
 .flex-table {
   display: flex;
   flex-flow: row wrap;
   border-left: solid 1px $table-border;
+  border-bottom: solid 3px $table-header-border;
   transition: 0.5s;
   &:first-of-type {
     border-top: solid 1px $table-header-border;
@@ -75,12 +77,22 @@ div {
   width: calc(100% / 3); //1px = border right
   text-align: center;
   padding: 0.5em 0.5em;
-  border-right: solid 1px $table-border;
+
   //flex: 1 1 33.3%;
   &:last-child {
-    // border-right: 0;
+    border-right: solid 1px $table-border;
   }
 }
+
+.zero-case-simulations {
+  padding: 2em;
+  border: solid 1px $table-border;
+}
+
+.state-changes {
+  font-weight: 700;
+}
+
 
 @media all and (max-width: 767px) {
   .flex-row {
@@ -96,40 +108,3 @@ div {
   }
 }
 
-@media all and (max-width: 430px) {
-
-  .flex-table {
-    .flex-row {
-      border-bottom: 0;
-    }
-    .flex-row:last-of-type {
-      border-bottom: solid 1px $table-border;
-    }
-  }
-
-  .header {
-    .flex-row {
-      border-bottom: solid 1px;
-    }
-  }
-
-  .flex-row {
-    width: 100%; //1px = border right
-
-    &.first {
-      width: 100%;
-      border-bottom: solid 1px $table-border;
-    }
-  }
-
-  .column {
-    width: 100%;
-    .flex-row {
-      border-bottom: solid 1px $table-border;
-    }
-  }
-
-  .flex-cell {
-    width: 100%; //1px = border right
-  }
-}

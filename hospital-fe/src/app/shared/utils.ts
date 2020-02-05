@@ -1,6 +1,10 @@
-import {Drug, PatientsRegister, SimulationHistory, SimulationResults, State} from './models/simulator.model';
+import {Drug, PatientsRegister, SimulationResults, State} from './models/simulator.model';
+import {environment} from "../../environments/environment";
 
 export class Utils {
+
+  static readonly historySize = environment.historyLength;
+
   static parseToPatientsRegister(patientsStringList: string, separator: string): PatientsRegister {
     return patientsStringList
       .split(separator)
@@ -22,5 +26,13 @@ export class Utils {
     });
     simulation.usedDrugs = usedDrugs;
     return simulation;
+  }
+
+  static limitSimulationHistory(simulationHistory: SimulationResults[]):SimulationResults []{
+    if (simulationHistory.length >= this.historySize ){
+      // shift instead of pop since we show the array in reverse order
+      simulationHistory.shift() ;
+    }
+    return simulationHistory;
   }
 }

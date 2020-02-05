@@ -1,0 +1,33 @@
+<div class="table-container" role="table" aria-label="Destinations">
+  <!--  table Header-->
+  <div class="flex-table header" role="rowgroup">
+    <div class="flex-row " role="columnheader">Health states</div>
+    <div class="flex-row" role="columnheader">Pre-treatment</div>
+    <div class="flex-row" role="columnheader">Post-treatment</div>
+    <div class="flex-row" role="columnheader">Drugs used</div>
+  </div>
+  <div class="flex-table row" role="rowgroup" *ngFor="let simulation of simulationHistory.slice().reverse()">
+    <div class="column">
+      <div class="flex-row" *ngFor="let results of simulation.results">
+        <div class="flex-cell" role="cell">{{fullHealthStateNames[results.healthState]}}</div>
+        <div class="flex-cell" role="cell">{{results.preTreatment}}</div>
+        <div class="flex-cell" role="cell">{{results.postTreatment}}</div>
+      </div>
+    </div>
+    <div class="flex-row rowspan first">
+      <ul>
+        <ng-container *ngIf="simulation.usedDrugs[0] != ''">
+          <li *ngFor="let drug of simulation.usedDrugs">
+            {{fullDrugNames[drug]}}
+          </li>
+        </ng-container>
+        <li *ngIf="simulation.usedDrugs[0] == ''">
+          No treatment
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="rowspan zero-case-simulations" *ngIf="simulationHistory.length == 0">
+    Run a simulation to see data
+  </div>
+</div>
