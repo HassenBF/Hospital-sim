@@ -48,6 +48,8 @@ export class MainDashboardComponent implements OnInit {
       this.postTreatmentPatients = {};
       this.preTreatmentPatients = patients;
       this.usedDrugs = drugs;
+       // this.usedDrugs = ['An','I'];
+       // this.preTreatmentPatients = {T:3,H:2,F:1};
       console.log('Patients',this.preTreatmentPatients);
       console.log('drugs',this.usedDrugs);
       this.simulationHistory
@@ -57,8 +59,6 @@ export class MainDashboardComponent implements OnInit {
 
 
   public runSimulation(): void {
-
-    //this.usedDrugs = ['P','As'];
     const quarantine = new Quarantine(this.preTreatmentPatients);
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
@@ -67,14 +67,14 @@ export class MainDashboardComponent implements OnInit {
     this.simulationHistory[this.simulationHistory.length-1] = Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs);
   }
 
-  public startStopAutoSimulation(): void {
-    forkJoin([
-      this.getPatients(),
-      this.getDrugs(),
-    ]).subscribe(([patients, drugs]) => {
-      this.preTreatmentPatients = patients;
-      this.usedDrugs = drugs;
-      this.runSimulation();
-    })
-  }
+  // public startStopAutoSimulation(): void {
+  //   forkJoin([
+  //     this.getPatients(),
+  //     this.getDrugs(),
+  //   ]).subscribe(([patients, drugs]) => {
+  //     this.preTreatmentPatients = patients;
+  //     this.usedDrugs = drugs;
+  //     this.runSimulation();
+  //   })
+  // }
 }

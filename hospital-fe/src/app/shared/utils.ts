@@ -14,7 +14,7 @@ export class Utils {
       }, {} as PatientsRegister)
   };
 
-  static parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients?: PatientsRegister, usedDrugs: Drug[]) {
+  static parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients: PatientsRegister, usedDrugs: Drug[]) {
     let simulation = {usedDrugs: [], results: []};
     Object.keys({...preTreatmentPatients, ...postTreatmentPatients}).forEach((state: State) => {
       simulation.results.push(

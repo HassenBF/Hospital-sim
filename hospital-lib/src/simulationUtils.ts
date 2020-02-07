@@ -1,7 +1,7 @@
 import {
     Drug,
     DrugsCombination,
-    HealthStateRuleSet,
+    HealthStateRulesSet,
     HealthStates,
     HealthStatesAndDrugInteractionsRules,
     State
@@ -17,7 +17,7 @@ export class SimulationUtils {
      * @param healthState
      * @param healthStatesRuleSets => array containing drug interaction rules for every health state
      */
-    static getCorrespondingRulesIndex(healthState: State, healthStatesRuleSets: HealthStateRuleSet[]): number {
+    static getCorrespondingRulesIndex(healthState: State, healthStatesRuleSets: HealthStateRulesSet[]): number {
         return healthStatesRuleSets.findIndex((healthConditionTreatment) => {
             return healthConditionTreatment.patientInitialState === healthState;
         });
@@ -45,7 +45,7 @@ export class SimulationUtils {
      * @returns {boolean} true if combination causes death
      */
 
-    static  isLethalDrugCombination(usedDrugs:Drug[],lethalDrugCombinations:DrugsCombination[]): boolean {
+    static isLethalDrugCombination(usedDrugs: Drug[], lethalDrugCombinations: DrugsCombination[]): boolean {
         return lethalDrugCombinations.some((treatment) => {
             //console.log('current ruleSet',treatment);
             return this.isThereMatchingRules(treatment.drugsCombination, usedDrugs);
@@ -56,21 +56,21 @@ export class SimulationUtils {
     /**
      *
      * @returns {State} Health state after treatment with drugs, could be the same or different
-     * @param healthStateRuleSet => rulesSet for a specific health state
+     * @param healthStateRulesSet => rulesSet for a specific health state
      * @param usedDrugs
      */
-    static getPostTreatmentHealthState(healthStateRuleSet: HealthStateRuleSet, usedDrugs:Drug[]): State {
-        const treatmentResult = healthStateRuleSet.treatments.find((treatment, index) => {
+    static getPostTreatmentHealthState(healthStateRulesSet: HealthStateRulesSet, usedDrugs: Drug[]): State {
+        const treatmentResult = healthStateRulesSet.treatments.find((treatment, index) => {
             return this.isThereMatchingRules(treatment.drugsCombination, usedDrugs);
         });
         if (treatmentResult) {
             return treatmentResult.result
         }
         // if no treatment found ,check for missing mandatory drugs like Insulin for diabetes
-        if (healthStateRuleSet.hasOwnProperty('mandatoryTreatments')) {
+        if (healthStateRulesSet.hasOwnProperty('mandatoryTreatments')) {
             return HealthStates.DEAD;
         }
-        return healthStateRuleSet.patientInitialState;
+        return healthStateRulesSet.patientInitialState;
     }
 
 
@@ -82,12 +82,12 @@ export class SimulationUtils {
      */
     static everyoneIsDead(preTreatmentPatients: PatientsRegister): PatientsRegister {
         preTreatmentPatients[HealthStates.DEAD] = Object.keys(preTreatmentPatients)
-                .reduce((totalNbOfPatients, patientState) => {
-                        totalNbOfPatients += preTreatmentPatients[patientState];
-                        preTreatmentPatients[patientState] = 0;
-                        return totalNbOfPatients;
-                    }
-                    , 0);
+            .reduce((totalNbOfPatients, patientState) => {
+                    totalNbOfPatients += preTreatmentPatients[patientState];
+                    preTreatmentPatients[patientState] = 0;
+                    return totalNbOfPatients;
+                }
+                , 0);
         return preTreatmentPatients
     }
 
@@ -101,35 +101,42 @@ export class SimulationUtils {
      * @param postTreatmentPatients
      */
 
-    static switchPatientsState(preTreatmentHealthState: State,
-                               postTreatmentHealthState: State,
-                               preTreatmentPatients: PatientsRegister,
-                               postTreatmentPatients: PatientsRegister): PatientsRegister {
+    static switchPatientsState(preTreatmentPatients: PatientsRegister,
+                               postTreatmentPatients: PatientsRegister,
+                               preTreatmentHealthState: State,
+                               postTreatmentHealthState: State): PatientsRegister {
 
-        //TODO check dis nullify
-        postTreatmentHealthState[preTreatmentHealthState] = 0;
-        postTreatmentPatients[postTreatmentHealthState] ?
-            postTreatmentPatients[postTreatmentHealthState] += preTreatmentPatients[preTreatmentHealthState] :
+        // if target health state already exists
+        if (postTreatmentPatients[postTreatmentHealthState]) {
+            postTreatmentPatients[postTreatmentHealthState] += preTreatmentPatients[preTreatmentHealthState];
+            postTreatmentPatients[preTreatmentHealthState] -=  preTreatmentPatients[preTreatmentHealthState];
+        } else {
             postTreatmentPatients[postTreatmentHealthState] = preTreatmentPatients[preTreatmentHealthState];
-
-
+            postTreatmentPatients[preTreatmentHealthState] -= postTreatmentPatients[postTreatmentHealthState];
+        }
 
         return postTreatmentPatients;
     }
 
 
+
     static treatPatients(preTreatmentPatients: PatientsRegister,
                          postTreatmentPatients: PatientsRegister,
                          usedDrugs: Drug[],
-                         simRules:HealthStatesAndDrugInteractionsRules) : PatientsRegister{
-        Object.keys(preTreatmentPatients).forEach((preTreatmentHealthState: State) => {
+                         simRules: HealthStatesAndDrugInteractionsRules): PatientsRegister {
+
+        Object.keys(postTreatmentPatients).forEach((preTreatmentHealthState: State) => {
             // Index of rules (in rules table) corresponding to current patients healthState.
             const healthStateRulesIndex = SimulationUtils.getCorrespondingRulesIndex(preTreatmentHealthState, simRules.healthStatesRuleSets);
             const correspondingRuleSet = simRules.healthStatesRuleSets[healthStateRulesIndex];
             const postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(correspondingRuleSet, usedDrugs);
             // building post treatment patients object
-            postTreatmentPatients = SimulationUtils.switchPatientsState(
-                preTreatmentHealthState, postTreatmentHealthState, preTreatmentPatients, postTreatmentPatients)
+            if (postTreatmentHealthState !== preTreatmentHealthState) {
+                postTreatmentPatients = SimulationUtils.switchPatientsState(preTreatmentPatients, postTreatmentPatients,
+                    preTreatmentHealthState, postTreatmentHealthState
+                )
+            }
+            console.log(postTreatmentPatients);
         });
         return postTreatmentPatients;
     }

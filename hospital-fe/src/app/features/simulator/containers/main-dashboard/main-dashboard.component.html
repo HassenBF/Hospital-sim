@@ -1,7 +1,6 @@
 <div class="main-dashboard-container">
   <app-control-panel (getDrugsAndPatients)="getSimulationData()"
-                     (administerDrugs)="runSimulation()"
-                     (toggleAutoSimulation)="startStopAutoSimulation()">
+                     (administerDrugs)="runSimulation()">
   </app-control-panel>
 
   <app-simulations-list [simulationHistory]="simulationHistory"></app-simulations-list>

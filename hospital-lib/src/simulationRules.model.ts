@@ -26,7 +26,7 @@ export interface Treatment extends DrugsCombination{
     result: State
 }
 
-export interface HealthStateRuleSet {
+export interface HealthStateRulesSet {
     patientInitialState: State,
     treatments: Treatment [],
     mandatoryTreatments?: DrugsCombination []  // result in death if not administrated
@@ -35,7 +35,7 @@ export interface HealthStateRuleSet {
 
 export interface HealthStatesAndDrugInteractionsRules {
     lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
-    healthStatesRuleSets:HealthStateRuleSet[]
+    healthStatesRuleSets:HealthStateRulesSet[]
 }
 
 export interface SimulationSession {

@@ -1,108 +1,155 @@
 import {Expect, Setup, Test, TestFixture} from 'alsatian';
 import {Quarantine} from './quarantine';
+import {AvailableDrugs, Drug, HealthStates} from './simulationRules.model';
+import {SimulationUtils} from './simulationUtils';
 
 @TestFixture()
-export class QuarantineTest {
+export class SimulationUtilsTest {
 
     private quarantine: Quarantine;
+    private RULES_MOCK = {
+        lethalDrugInteractions: [
+            {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
+        ],
+        healthStatesRuleSets: [
+            {
+                patientInitialState: HealthStates.HEALTHY,
+                treatments: [
+                    {drugsCombination: [AvailableDrugs.INSULIN, AvailableDrugs.ANTIBIOTIC], result: HealthStates.FEVER}
+                ],
+            },
+            {
+                patientInitialState: HealthStates.FEVER,
+                treatments: [
+                    {drugsCombination: [AvailableDrugs.ASPIRIN], result: HealthStates.HEALTHY},
+                    {drugsCombination: [AvailableDrugs.PARACETAMOL], result: HealthStates.HEALTHY}
+                ]
+            },
+            {
+                patientInitialState: HealthStates.TUBERCULOSIS,
+                treatments: [
+                    {drugsCombination: [AvailableDrugs.ANTIBIOTIC], result: HealthStates.HEALTHY}
+                ]
+            },
+            {
+                patientInitialState: HealthStates.DIABETES,
+                treatments: [
+                    {drugsCombination: [AvailableDrugs.INSULIN], result: HealthStates.DIABETES}
+                ],
+                mandatoryTreatments: [
+                    {drugsCombination: [AvailableDrugs.INSULIN]}
+                ]
+            },
+
+        ]
+
+    }
+
+    private usedDrugs: Drug[] = ['P'];
+    private insulinAntibioticRule = {
+        drugsCombination: [AvailableDrugs.INSULIN, AvailableDrugs.ANTIBIOTIC],
+        result: HealthStates.FEVER
+    };
+    private paracetamolRule = {drugsCombination: [AvailableDrugs.PARACETAMOL], result: HealthStates.HEALTHY};
+
+    private feverRulesSet = {
+        patientInitialState: HealthStates.FEVER,
+        treatments: [
+            {drugsCombination: [AvailableDrugs.ASPIRIN], result: HealthStates.HEALTHY},
+            {drugsCombination: [AvailableDrugs.PARACETAMOL], result: HealthStates.HEALTHY}
+        ]
+    };
+
+    private diabetesRulesSet = {
+        patientInitialState: HealthStates.DIABETES,
+        treatments: [
+            {drugsCombination: [AvailableDrugs.INSULIN], result: HealthStates.DIABETES}
+        ],
+        mandatoryTreatments: [
+            {drugsCombination: [AvailableDrugs.INSULIN]}
+        ]
+    };
+
+    private preTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
+    private postTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
 
     @Setup
     public setup() {
-        // The responsibility of the Quarantine object is to simulate diseases on a group of patients.
-        // It is initialized with a list of patients' health status, separated by a comma.
-        // Each health status is described by one or more characters
-        // (in the test below, we will always have only one disease / patient)
-        // The characters mean:
-        // H : Healthy
-        // F : Fever
-        // D : Diabetes
-        // T : Tuberculosis
-
         this.quarantine = new Quarantine({
             F: 1, H: 2, D: 3, T: 1, X: 0
         });
-        // Quarantine provides medicines to the patients, but can not target a specific group of patient.
-        // The same medicines are always given to all the patients.
-
-        // Then Quarantine can provide a report that gives the number of patients that have the given disease.
-        // X means Dead
     }
 
     @Test()
-    public beforeTreatment(): void {
-        // diabetics die without insulin
-        Expect(this.quarantine.report()).toEqual({
-            F: 1, H: 2, D: 3, T: 1, X: 0
-        });
+    public getCoorespondingRulesIndex(): void {
+        // There is a rule set corresponding to that healthState
+        let correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('T', this.RULES_MOCK.healthStatesRuleSets);
+        Expect(correspondingRulesIndex).toEqual(2);
+        // There's no rule set corresponding to that healthState
+        correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('X', this.RULES_MOCK.healthStatesRuleSets);
+        Expect(correspondingRulesIndex).toEqual(-1);
     }
 
     @Test()
-    public noTreatment(): void {
-        this.quarantine.wait40Days();
-        // diabetics die without insulin
-        Expect(this.quarantine.report()).toEqual({
-            F: 1, H: 2, D: 0, T: 1, X: 3
-        });
+    public isThereMatchingRules(): void {
+        // There's no drug combination rule that matches with the used Drugs
+        let doesRuleExist = SimulationUtils.isThereMatchingRules(this.insulinAntibioticRule.drugsCombination, this.usedDrugs);
+        Expect(doesRuleExist).toEqual(false);
+        // There's a drug combination rule that matches with the used Drugs
+        doesRuleExist = SimulationUtils.isThereMatchingRules(this.paracetamolRule.drugsCombination, this.usedDrugs);
+        Expect(doesRuleExist).toEqual(true);
     }
 
     @Test()
-    public aspirin(): void {
-        this.quarantine.setDrugs(['As']);
-        this.quarantine.wait40Days();
-        // aspirin cure Fever
-        Expect(this.quarantine.report()).toEqual({
-            F: 0, H: 3, D: 0, T: 1, X: 3
-        });
+    public isLethalDrugCombination(): void {
+        // Drugs combination is not lethal
+        let isLethal = SimulationUtils.isLethalDrugCombination(this.usedDrugs, this.RULES_MOCK.lethalDrugInteractions);
+        Expect(isLethal).toEqual(false);
+        // Drugs combination is lethal
+        this.usedDrugs = ['As', 'P'];
+        isLethal = SimulationUtils.isLethalDrugCombination(this.usedDrugs, this.RULES_MOCK.lethalDrugInteractions);
+        Expect(isLethal).toEqual(true);
     }
 
     @Test()
-    public antibiotic(): void {
-        this.quarantine.setDrugs(['An']);
-        this.quarantine.wait40Days();
-        // antibiotic cure Tuberculosis
-        // but healthy people catch Fever if mixed with insulin.
-        Expect(this.quarantine.report()).toEqual({
-            F: 1, H: 3, D: 0, T: 0, X: 3
-        });
+    public getPostTreatmentHealthState(): void {
+        // Patient's state changed to healthy
+        let postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(this.feverRulesSet, this.usedDrugs);
+        Expect(postTreatmentHealthState).toEqual('H');
+        // // Patient's state stayed unchanged
+        this.usedDrugs = ['I'];
+        postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(this.feverRulesSet, this.usedDrugs);
+        Expect(postTreatmentHealthState).toEqual('F');
+        // Mandatory treatment not delivered (insulin here) ==> patient dies
+        this.usedDrugs = ['P'];
+        postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(this.diabetesRulesSet, this.usedDrugs);
+        Expect(postTreatmentHealthState).toEqual('X');
     }
 
     @Test()
-    public insulin(): void {
-        this.quarantine.setDrugs(['I']);
-        this.quarantine.wait40Days();
-        // insulin prevent diabetic subject from dying, does not cure Diabetes,
-        Expect(this.quarantine.report()).toEqual({
-            F: 1, H: 2, D: 3, T: 1, X: 0
-        });
+    public everyoneIsDead(): void {
+        // Patient's state changed to healthy
+        let deadPatients = SimulationUtils.everyoneIsDead(this.preTreatmentPatients);
+        Expect(deadPatients).toEqual({F: 0, H: 0, D: 0, T: 0, X: 7});
     }
 
     @Test()
-    public antibioticPlusInsulin(): void {
-        this.quarantine.setDrugs(['An', 'I']);
-        this.quarantine.wait40Days();
-        // if insulin is mixed with antibiotic, healthy people catch Fever
-        Expect(this.quarantine.report()).toEqual({
-            F: 3, H: 1, D: 3, T: 0, X: 0
-        });
+
+    public switchPatientsState(): void {
+        // Private preTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
+       //  Patient's state changed to healthy
+
+        let postTreatmentPatients = SimulationUtils.switchPatientsState({F: 1, H: 2, D: 3, T: 1, X: 0},
+            {F: 1, H: 2, D: 3, T: 1, X: 0},
+            'H',
+            'F');
+        Expect(postTreatmentPatients).toEqual({F: 3, H: 0, D: 3, T: 1, X: 0});
+
+        postTreatmentPatients = SimulationUtils.switchPatientsState({F: 1, H: 2, D: 3, T: 1, X: 0},
+            {F: 1, H: 2, D: 3, T: 1, X: 0},
+            'H',
+            'H');
+        Expect(postTreatmentPatients).toEqual({F: 1, H: 2, D: 3, T: 1, X: 0});
     }
 
-    @Test()
-    public paracetamol(): void {
-        this.quarantine.setDrugs(['P']);
-        this.quarantine.wait40Days();
-        // paracetamol heals fever
-        Expect(this.quarantine.report()).toEqual({
-            F: 0, H: 3, D: 0, T: 1, X: 3
-        });
-    }
-
-    @Test()
-    public paracetamolAndAspirin(): void {
-        this.quarantine.setDrugs(['P', 'As']);
-        this.quarantine.wait40Days();
-        // paracetamol kills subject if mixed with aspirin
-        Expect(this.quarantine.report()).toEqual({
-            F: 0, H: 0, D: 0, T: 0, X: 7
-        });
-    }
 }

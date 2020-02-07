@@ -1,5 +1,5 @@
 import {PatientsRegister} from './patientsRegister';
-import {Drug, HealthStateRuleSet, HealthStates, State, Treatment} from './simulationRules.model';
+import {Drug, HealthStateRulesSet, HealthStates, State, Treatment} from './simulationRules.model';
 import {SimulationRules} from './simulationRules';
 import {SimulationUtils} from './simulationUtils';
 
@@ -11,7 +11,7 @@ export class Quarantine {
     private readonly SIM_RULES = SimulationRules.rules;
 
     constructor(private preTreatmentPatients: PatientsRegister) {
-        this.preTreatmentPatients = {...preTreatmentPatients}
+        this.postTreatmentPatients = {...preTreatmentPatients};
     }
 
     public setDrugs(drugs: Drug[]): void {
@@ -20,12 +20,11 @@ export class Quarantine {
 
     public wait40Days(): void {
         if (SimulationUtils.isLethalDrugCombination(this.usedDrugs, this.SIM_RULES.lethalDrugInteractions)) {
-            this.postTreatmentPatients = SimulationUtils.everyoneIsDead(this.preTreatmentPatients);
+            this.postTreatmentPatients = SimulationUtils.everyoneIsDead(this.postTreatmentPatients);
         } else {
-            this.postTreatmentPatients = SimulationUtils.treatPatients(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs, this.SIM_RULES);
+            this.postTreatmentPatients = SimulationUtils.treatPatients(this.preTreatmentPatients,this.postTreatmentPatients, this.usedDrugs, this.SIM_RULES);
         }
     }
-
     public report(): PatientsRegister {
         console.log('post treatment', this.postTreatmentPatients);
         return this.postTreatmentPatients;
