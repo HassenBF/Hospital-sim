@@ -1,8 +1,32 @@
+
+
 .control-panel-container {
   width: 100%;
   padding: 20px;
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-content: start
+}
+
+::ng-deep{
+  div.mat-slide-toggle-bar {
+    background-color: grey;
+  }
+}
+
+.control-button{
+  margin: 0.5rem;
+}
+
+.button-group {
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: start;
+  align-content: space-around;
 }

@@ -1,39 +1,42 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {interval, of, Subscribable, Subscription} from "rxjs";
-import {environment} from "../../../../../environments/environment";
-import {startWith, switchMap} from "rxjs/operators";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {interval, of, Subscribable, Subscription} from 'rxjs';
+import {environment} from '../../../../../environments/environment';
+import {filter, startWith, switchMap, takeUntil, takeWhile, tap} from 'rxjs/operators';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AVAILABLE_DRUGS, AVAILABLE_DRUGS_LIST} from "../../../../core/full-names.const";
 
 @Component({
   selector: 'app-control-panel',
   templateUrl: './control-panel.component.html',
   styleUrls: ['./control-panel.component.scss']
 })
-export class ControlPanelComponent implements OnInit {
-
+export class ControlPanelComponent implements OnInit, OnDestroy {
 
   @Output() getDrugsAndPatients = new EventEmitter();
   @Output() administerDrugs = new EventEmitter();
   @Output() toggleAutoSimulation = new EventEmitter();
-  cpForm: FormGroup;
-  private autoRefreshInterval = environment.autoRefreshInterval;
-  autoSimToggleSubscription : Subscription;
+  controlPanelForm: FormGroup;
+  autoRefreshInterval = environment.autoRefreshInterval;
+  autoSimToggleSubscription: Subscription;
+  drugList = AVAILABLE_DRUGS_LIST
 
-
-  constructor(private fb:FormBuilder) {
+  constructor(private fb: FormBuilder) {
   }
 
   ngOnInit() {
     this.buildForm();
-  }
-  buildForm() {
-    this.cpForm = this.fb.group({
-      autoSimulationSwitch: false,
-    });
+    this.setUpAutoSimulation();
   }
 
-  onChange($event){
-    this.switchAutoSimulation($event.checked);
+  ngOnDestroy(): void {
+    this.autoSimToggleSubscription.unsubscribe();
+  }
+
+  buildForm() {
+    this.controlPanelForm = this.fb.group({
+      autoSimulationSwitch: false,
+      drug:''
+    });
   }
 
   public getSimulationData(): void {
@@ -44,16 +47,13 @@ export class ControlPanelComponent implements OnInit {
     this.administerDrugs.emit();
   }
 
-  public switchAutoSimulation(autoSimToggleValue:boolean): void {
-    this.autoSimToggleSubscription = interval(2000).pipe(
-      startWith(0)
-    ).subscribe(()=>{
-      console.log('call');
-      this.toggleAutoSimulation.emit();
+  public setUpAutoSimulation() {
+    this.autoSimToggleSubscription = interval(this.autoRefreshInterval).pipe(
+      filter(() => this.controlPanelForm.controls.autoSimulationSwitch.value),
+    ).subscribe(() => {
+      this.toggleAutoSimulation.emit(this.controlPanelForm.controls.autoSimulationSwitch.value);
     });
-    // if (!autoSimToggleValue) {
-    //   this.autoSimToggleSubscription.unsubscribe();
-    // }
   }
+
 
 }

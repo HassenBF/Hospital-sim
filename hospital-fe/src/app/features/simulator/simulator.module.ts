@@ -4,10 +4,11 @@ import {RouterModule, Routes} from '@angular/router';
 import {MainDashboardComponent} from './containers/main-dashboard/main-dashboard.component';
 import {SimulationsListComponent} from './components/simulations-history/simulations-list.component';
 import {ControlPanelComponent} from './components/control-panel/control-panel.component';
-import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-import {MatButtonModule} from "@angular/material/button";
-import {ReactiveFormsModule} from "@angular/forms";
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatButtonModule} from '@angular/material/button';
+import {ReactiveFormsModule} from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
+import {MatSelectModule} from "@angular/material/select";
 
 const routes: Routes = [
   {
@@ -17,14 +18,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        MatSlideToggleModule,
-        MatButtonModule,
-        ReactiveFormsModule,
-        MatTableModule,
-    ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    MatSlideToggleModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
+  ],
   declarations: [
     MainDashboardComponent,
     SimulationsListComponent,

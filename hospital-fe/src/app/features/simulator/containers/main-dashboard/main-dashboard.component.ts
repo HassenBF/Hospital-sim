@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 
-import {SimulationDataService} from "../../../../core/services/simulation-data.service";
-import {map} from "rxjs/operators";
-import {forkJoin, Observable} from "rxjs";
-import {environment} from "../../../../../environments/environment";
-import {Utils} from "../../../../shared/utils";
-import {Drug, PatientsRegister} from "../../../../shared/models/simulator.model";
-import {Quarantine} from "../../../../../../../hospital-lib/src";
+import {SimulationDataService} from '../../../../core/services/simulation-data.service';
+import {map} from 'rxjs/operators';
+import {forkJoin, Observable} from 'rxjs';
+import {environment} from '../../../../../environments/environment';
+import {Utils} from '../../../../shared/utils';
+import {Drug, PatientsRegister} from '../../../../shared/models/simulator.model';
+import {Quarantine} from '../../../../../../../hospital-lib/src';
 
 @Component({
   selector: 'app-main-dashboard',
@@ -15,11 +15,10 @@ import {Quarantine} from "../../../../../../../hospital-lib/src";
 })
 export class MainDashboardComponent implements OnInit {
 
-  private listSeparator = ',';
+  private readonly listSeparator = ',';
   private preTreatmentPatients: PatientsRegister = {};
   private postTreatmentPatients: PatientsRegister = {};
   private usedDrugs: Drug[] = [];
-  private autoRefreshInterval = environment.autoRefreshInterval;
   private simulationHistory = [];
 
   constructor(private simulationService: SimulationDataService) {}
@@ -29,52 +28,42 @@ export class MainDashboardComponent implements OnInit {
   getPatients(): Observable<PatientsRegister> {
     return this.simulationService.getPatients()
       .pipe(
-        map((patients) => Utils.parseToPatientsRegister(patients, this.listSeparator) as PatientsRegister)
-      )
+        map((patients) => this.simulationService.parseToPatientsRegister(patients, this.listSeparator) as PatientsRegister)
+      );
   }
 
   getDrugs(): Observable<Drug[]> {
     return this.simulationService.getDrugs()
       .pipe(
         map((drugsString) => drugsString.split(this.listSeparator) as Drug[])
-      )
+      );
   }
 
-  public getSimulationData() {
+  public getSimulationData(isAutoSimulationActivated?: boolean) {
     forkJoin([
       this.getPatients(),
       this.getDrugs(),
-    ]).subscribe(([patients,drugs]) => {
+    ]).subscribe(([patients, drugs]) => {
       this.postTreatmentPatients = {};
       this.preTreatmentPatients = patients;
       this.usedDrugs = drugs;
-       // this.usedDrugs = ['An','I'];
-       // this.preTreatmentPatients = {T:3,H:2,F:1};
-      console.log('Patients',this.preTreatmentPatients);
-      console.log('drugs',this.usedDrugs);
+      // transforms simulation data into display format
       this.simulationHistory
-        .push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs));
+        .push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs));
+      // makes sure table size do not exceed a defined size
+      Utils.truncateSimulationHistory(this.simulationHistory);
+      if (isAutoSimulationActivated) {
+        this.runSimulation();
+      }
     });
   }
-
-
   public runSimulation(): void {
     const quarantine = new Quarantine(this.preTreatmentPatients);
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
     this.postTreatmentPatients = quarantine.report();
-    Utils.limitSimulationHistory(this.simulationHistory);
-    this.simulationHistory[this.simulationHistory.length-1] = Utils.parseSimulationDataIntoTable(this.preTreatmentPatients,this.postTreatmentPatients,this.usedDrugs);
+    // adds simulation generated data
+    this.simulationHistory[this.simulationHistory.length - 1] =
+      Utils.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs);
   }
-
-  // public startStopAutoSimulation(): void {
-  //   forkJoin([
-  //     this.getPatients(),
-  //     this.getDrugs(),
-  //   ]).subscribe(([patients, drugs]) => {
-  //     this.preTreatmentPatients = patients;
-  //     this.usedDrugs = drugs;
-  //     this.runSimulation();
-  //   })
-  // }
 }

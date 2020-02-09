@@ -1,5 +1,5 @@
 export interface PatientsRegister {
-  [key: string]: number
+  [key: string]: number;
 }
 
 export enum HealthStates {
@@ -21,23 +21,23 @@ export type State = 'H' | 'F' | 'T' | 'D' | 'X';
 export type Drug = 'As' | 'An' | 'I' | 'P';
 
 export interface DrugsCombination {
-  drugsCombination: Drug [],
+  drugsCombination: Drug [];
 }
 
 export interface Treatment extends DrugsCombination {
-  result: State
+  result: State;
 }
 
 export interface HealthStateRuleSet {
-  patientInitialState: State,
-  treatments: Treatment [],
-  mandatoryTreatments?: DrugsCombination []  // result in death if not administrated
+  patientInitialState: State;
+  treatments: Treatment [];
+  mandatoryTreatments?: DrugsCombination [];  // result in death if not administrated
 }
 
 
 export interface HealthStatesAndDrugInteractionsRules {
-  lethalDrugInteractions: DrugsCombination[], // contains drug combinations that cause death if given to a patient
-  healthStatesRuleSets: HealthStateRuleSet[]
+  lethalDrugInteractions: DrugsCombination[]; // contains drug combinations that cause death if given to a patient
+  healthStatesRuleSets: HealthStateRuleSet[];
 }
 
 export interface SimulationSession {
@@ -48,14 +48,14 @@ export interface SimulationSession {
 }
 
 export interface SimulationResults {
-  usedDrugs: Drug[],
+  usedDrugs: Drug[];
   results: [
     {
       healthState: State,
       preTreatment: number,
       postTreatment: number
     }
-  ]
+  ];
 }
 
 

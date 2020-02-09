@@ -1,12 +1,27 @@
-<div class="control-panel-container" formGroup="form" >
-  <div>
-    <button color="primary" mat-flat-button (click)="getSimulationData()"> Get simulation  </button>
-<!--    <mat-slide-toggle formControlName='autoSimulationSwitch'-->
-<!--                    > Automate Simulation </mat-slide-toggle>-->
-
-<!--    <mat-slide-toggle [checked]="X.value" (click)="X.value =!X.value" color="primary">{{X.value ? 'ON' : 'OFF'}}</mat-slide-toggle>-->
+<div class="control-panel-container" [formGroup]=controlPanelForm>
+  <div class="button-group">
+    <button class="control-button" color="secondary" mat-flat-button (click)="getSimulationData()"> Get simulation data</button>
+    <button class="control-button" color="primary" mat-flat-button (click)="startSimulation()"> Administer Drugs</button>
   </div>
-  <div>
-    <button color="primary" mat-flat-button (click)="startSimulation()"> Administer Drugs  </button>
+  <mat-slide-toggle color="primary" formControlName='autoSimulationSwitch'> Automate Simulation</mat-slide-toggle>
+  <div class="button-group">
+<!--    <mat-form-field>-->
+<!--      <mat-label>Favorite food</mat-label>-->
+<!--      <mat-select>-->
+<!--        <mat-option *ngFor="let food of foods" [value]="food.value">-->
+<!--          {{food.viewValue}}-->
+<!--        </mat-option>-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+    <button class="control-button" color="secondary" mat-flat-button (click)="getSimulationData()"> Add patients</button>
+
+<!--    <mat-form-field>-->
+<!--      <mat-label>Toppings</mat-label>-->
+<!--      <mat-select formControlName="drug" multiple>-->
+<!--        <mat-option *ngFor="let drug of drugList" [value]="drug">{{drug}}</mat-option>-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+    <button class="control-button" color="primary" mat-flat-button (click)="startSimulation()"> add drugs</button>
   </div>
 </div>
+

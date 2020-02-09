@@ -114,7 +114,6 @@ export class SimulationUtils {
             postTreatmentPatients[postTreatmentHealthState] = preTreatmentPatients[preTreatmentHealthState];
             postTreatmentPatients[preTreatmentHealthState] -= postTreatmentPatients[postTreatmentHealthState];
         }
-
         return postTreatmentPatients;
     }
 

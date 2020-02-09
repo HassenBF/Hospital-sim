@@ -1,5 +1,3 @@
-import {PatientsRegister} from "./patientsRegister";
-
 export enum HealthStates {
     'HEALTHY' = 'H',
     'FEVER' = 'F',
@@ -15,8 +13,8 @@ export enum AvailableDrugs {
     'PARACETAMOL' = 'P',
 }
 
- export type State = 'H'|'F'|'T'|'D'|'X';
- export type Drug = 'As'|'An'|'I'|'P';
+export type State = 'H'|'F'|'T'|'D'|'X';
+export type Drug = 'As'|'An'|'I'|'P';
 
 export interface DrugsCombination {
     drugsCombination: Drug [],
@@ -36,16 +34,4 @@ export interface HealthStateRulesSet {
 export interface HealthStatesAndDrugInteractionsRules {
     lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
     healthStatesRuleSets:HealthStateRulesSet[]
-}
-
-export interface SimulationSession {
-    preTreatmentHealthState:State;
-    postTreatmentHealthState:State;
-    preTreatmentPatients:PatientsRegister;
-    postTreatmentPatients:PatientsRegister;
-}
-
-export interface DisplayElement {
-    usedDrugs : Drug[],
-    sim : [{state:State, pre:number, post:number}]
 }

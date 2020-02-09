@@ -12,3 +12,8 @@ export const AVAILABLE_DRUGS = {
   As: 'Aspirin',
   An: 'Antibiotic',
 };
+
+
+export const AVAILABLE_DRUGS_LIST = [
+  'I','P','As','An'
+];

@@ -1,13 +1,13 @@
 import {Expect, Setup, Test, TestFixture} from 'alsatian';
 import {Quarantine} from './quarantine';
-import {AvailableDrugs, Drug, HealthStates} from './simulationRules.model';
+import {AvailableDrugs, Drug, HealthStates, HealthStatesAndDrugInteractionsRules} from './simulationRules.model';
 import {SimulationUtils} from './simulationUtils';
 
 @TestFixture()
 export class SimulationUtilsTest {
 
     private quarantine: Quarantine;
-    private RULES_MOCK = {
+    private RULES_MOCK : HealthStatesAndDrugInteractionsRules = {
         lethalDrugInteractions: [
             {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
         ],
@@ -43,13 +43,15 @@ export class SimulationUtilsTest {
 
         ]
 
-    }
+    };
 
     private usedDrugs: Drug[] = ['P'];
+
     private insulinAntibioticRule = {
         drugsCombination: [AvailableDrugs.INSULIN, AvailableDrugs.ANTIBIOTIC],
         result: HealthStates.FEVER
     };
+
     private paracetamolRule = {drugsCombination: [AvailableDrugs.PARACETAMOL], result: HealthStates.HEALTHY};
 
     private feverRulesSet = {
@@ -129,27 +131,17 @@ export class SimulationUtilsTest {
     @Test()
     public everyoneIsDead(): void {
         // Patient's state changed to healthy
-        let deadPatients = SimulationUtils.everyoneIsDead(this.preTreatmentPatients);
+        let deadPatients = SimulationUtils.everyoneIsDead({...this.preTreatmentPatients});
         Expect(deadPatients).toEqual({F: 0, H: 0, D: 0, T: 0, X: 7});
     }
 
     @Test()
-
     public switchPatientsState(): void {
-        // Private preTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
-       //  Patient's state changed to healthy
-
-        let postTreatmentPatients = SimulationUtils.switchPatientsState({F: 1, H: 2, D: 3, T: 1, X: 0},
-            {F: 1, H: 2, D: 3, T: 1, X: 0},
+        let postTreatmentPatients = SimulationUtils.switchPatientsState({...this.preTreatmentPatients},
+            {...this.postTreatmentPatients},
             'H',
             'F');
         Expect(postTreatmentPatients).toEqual({F: 3, H: 0, D: 3, T: 1, X: 0});
 
-        postTreatmentPatients = SimulationUtils.switchPatientsState({F: 1, H: 2, D: 3, T: 1, X: 0},
-            {F: 1, H: 2, D: 3, T: 1, X: 0},
-            'H',
-            'H');
-        Expect(postTreatmentPatients).toEqual({F: 1, H: 2, D: 3, T: 1, X: 0});
     }
-
 }
