@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 
-import {SimulationDataService} from '../../../../core/services/simulation-data.service';
+import {SimulationDataService} from '../../../../core/services/simulation-data-service/simulation-data.service';
 import {map} from 'rxjs/operators';
 import {forkJoin, Observable} from 'rxjs';
-import {environment} from '../../../../../environments/environment';
-import {Utils} from '../../../../shared/utils';
 import {Drug, PatientsRegister} from '../../../../shared/models/simulator.model';
 import {Quarantine} from '../../../../../../../hospital-lib/src';
+import {HistoryService} from '../../../../core/services/history-service/history.service';
 
 @Component({
   selector: 'app-main-dashboard',
@@ -21,7 +20,8 @@ export class MainDashboardComponent implements OnInit {
   private usedDrugs: Drug[] = [];
   private simulationHistory = [];
 
-  constructor(private simulationService: SimulationDataService) {}
+  constructor(private simulationService: SimulationDataService,
+              private historyService:HistoryService) {}
 
   ngOnInit() {}
 
@@ -47,11 +47,11 @@ export class MainDashboardComponent implements OnInit {
       this.postTreatmentPatients = {};
       this.preTreatmentPatients = patients;
       this.usedDrugs = drugs;
-      // transforms simulation data into display format
+      // transforms simulation data into display format before pushing to history table
       this.simulationHistory
-        .push(Utils.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs));
+        .push(this.historyService.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs));
       // makes sure table size do not exceed a defined size
-      Utils.truncateSimulationHistory(this.simulationHistory);
+      this.historyService.truncateSimulationHistory(this.simulationHistory);
       if (isAutoSimulationActivated) {
         this.runSimulation();
       }
@@ -62,8 +62,8 @@ export class MainDashboardComponent implements OnInit {
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
     this.postTreatmentPatients = quarantine.report();
-    // adds simulation generated data
+    // Append simulation results to simulation data .
     this.simulationHistory[this.simulationHistory.length - 1] =
-      Utils.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs);
+      this.historyService.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs);
   }
 }

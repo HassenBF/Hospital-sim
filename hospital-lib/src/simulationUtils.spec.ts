@@ -137,10 +137,8 @@ export class SimulationUtilsTest {
 
     @Test()
     public switchPatientsState(): void {
-        let postTreatmentPatients = SimulationUtils.switchPatientsState({...this.preTreatmentPatients},
-            {...this.postTreatmentPatients},
-            'H',
-            'F');
+        let postTreatmentPatients =
+            SimulationUtils.switchPatientsState({...this.preTreatmentPatients},{...this.postTreatmentPatients}, 'H', 'F');
         Expect(postTreatmentPatients).toEqual({F: 3, H: 0, D: 3, T: 1, X: 0});
 
     }

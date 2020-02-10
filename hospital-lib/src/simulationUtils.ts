@@ -118,7 +118,6 @@ export class SimulationUtils {
     }
 
 
-
     static treatPatients(preTreatmentPatients: PatientsRegister,
                          postTreatmentPatients: PatientsRegister,
                          usedDrugs: Drug[],

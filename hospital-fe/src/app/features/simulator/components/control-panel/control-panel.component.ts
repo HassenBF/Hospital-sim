@@ -1,9 +1,9 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {interval, of, Subscribable, Subscription} from 'rxjs';
+import {interval, Subscription} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
-import {filter, startWith, switchMap, takeUntil, takeWhile, tap} from 'rxjs/operators';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AVAILABLE_DRUGS, AVAILABLE_DRUGS_LIST} from "../../../../core/full-names.const";
+import {filter} from 'rxjs/operators';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {AVAILABLE_DRUGS_LIST} from '../../../../core/full-names.const';
 
 @Component({
   selector: 'app-control-panel',
@@ -35,7 +35,7 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
   buildForm() {
     this.controlPanelForm = this.fb.group({
       autoSimulationSwitch: false,
-      drug:''
+      drug: ''
     });
   }
 
@@ -48,11 +48,12 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
   }
 
   public setUpAutoSimulation() {
-    this.autoSimToggleSubscription = interval(this.autoRefreshInterval).pipe(
-      filter(() => this.controlPanelForm.controls.autoSimulationSwitch.value),
-    ).subscribe(() => {
-      this.toggleAutoSimulation.emit(this.controlPanelForm.controls.autoSimulationSwitch.value);
-    });
+    this.autoSimToggleSubscription = interval(this.autoRefreshInterval)
+      .pipe(
+        filter(() => this.controlPanelForm.controls.autoSimulationSwitch.value),
+      ).subscribe(() => {
+        this.toggleAutoSimulation.emit(this.controlPanelForm.controls.autoSimulationSwitch.value);
+      });
   }
 
 
