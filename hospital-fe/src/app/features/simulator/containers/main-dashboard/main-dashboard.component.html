@@ -1,7 +1,8 @@
 <div class="main-dashboard-container">
   <app-control-panel (getDrugsAndPatients)="getSimulationData()"
                      (administerDrugs)="runSimulation()"
-                     (toggleAutoSimulation)="getSimulationData($event)">
+                     (toggleAutoSimulation)="getSimulationData($event)"
+                     (manuallyAddPatients)="manualPatientAdd($event)">
   </app-control-panel>
 
   <app-simulations-history [simulationHistory]="simulationHistory"></app-simulations-history>

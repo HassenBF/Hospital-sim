@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
 import {MatSelectModule} from "@angular/material/select";
+import {MatInputModule} from "@angular/material/input";
 
 const routes: Routes = [
   {
@@ -26,6 +27,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatTableModule,
     MatSelectModule,
+    MatInputModule,
   ],
   declarations: [
     MainDashboardComponent,

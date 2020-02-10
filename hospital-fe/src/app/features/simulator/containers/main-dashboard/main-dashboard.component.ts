@@ -19,6 +19,7 @@ export class MainDashboardComponent implements OnInit {
   private postTreatmentPatients: PatientsRegister = {};
   private usedDrugs: Drug[] = [];
   private simulationHistory = [];
+  private manualUserInputOngoing =  false;
 
   constructor(private simulationService: SimulationDataService,
               private historyService:HistoryService) {}
@@ -37,6 +38,22 @@ export class MainDashboardComponent implements OnInit {
       .pipe(
         map((drugsString) => drugsString.split(this.listSeparator) as Drug[])
       );
+  }
+
+  public manualPatientAdd(patients : PatientsRegister){
+    if (!this.manualUserInputOngoing) {
+      this.simulationHistory
+        .push(this.historyService.parseSimulationDataIntoTable(patients, this.postTreatmentPatients, this.usedDrugs));
+    }
+
+    if (this.manualUserInputOngoing){
+      this.simulationHistory[this.simulationHistory.length - 1] =
+        this.historyService.parseSimulationDataIntoTable(patients, this.postTreatmentPatients, this.usedDrugs);
+    }
+    this.manualUserInputOngoing= true;
+    console.log("dashboard", patients);
+
+    return this.preTreatmentPatients
   }
 
   public getSimulationData(isAutoSimulationActivated?: boolean) {
@@ -58,6 +75,7 @@ export class MainDashboardComponent implements OnInit {
     });
   }
   public runSimulation(): void {
+    this.manualUserInputOngoing = false;
     const quarantine = new Quarantine(this.preTreatmentPatients);
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
