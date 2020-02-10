@@ -65,5 +65,6 @@ export class MainDashboardComponent implements OnInit {
     // Append simulation results to simulation data .
     this.simulationHistory[this.simulationHistory.length - 1] =
       this.historyService.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs);
+    console.log('simulationHistory', JSON.stringify(this.simulationHistory));
   }
 }

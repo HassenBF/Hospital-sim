@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {MainDashboardComponent} from './containers/main-dashboard/main-dashboard.component';
-import {SimulationsListComponent} from './components/simulations-history/simulations-list.component';
+import {SimulationsHistoryComponent} from './components/simulations-history/simulations-history.component';
 import {ControlPanelComponent} from './components/control-panel/control-panel.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatButtonModule} from '@angular/material/button';
@@ -29,7 +29,7 @@ const routes: Routes = [
   ],
   declarations: [
     MainDashboardComponent,
-    SimulationsListComponent,
+    SimulationsHistoryComponent,
     ControlPanelComponent,
   ],
   providers: [],

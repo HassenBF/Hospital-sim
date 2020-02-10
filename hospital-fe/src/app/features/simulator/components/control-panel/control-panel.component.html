@@ -1,9 +1,9 @@
 <div class="control-panel-container" [formGroup]=controlPanelForm>
   <div class="button-group">
-    <button class="control-button" color="secondary" mat-flat-button (click)="getSimulationData()"> Get simulation data</button>
-    <button class="control-button" color="primary" mat-flat-button (click)="startSimulation()"> Administer Drugs</button>
+    <button [disabled]="matSlideToggle.checked" class="control-button" color="secondary" mat-flat-button (click)="getSimulationData()"> Get simulation data</button>
+    <button [disabled]="matSlideToggle.checked"  class="control-button" color="primary" mat-flat-button (click)="startSimulation()"> Administer Drugs</button>
   </div>
-  <mat-slide-toggle color="primary" formControlName='autoSimulationSwitch'> Automate Simulation</mat-slide-toggle>
+  <mat-slide-toggle #matSlideToggle color="primary" formControlName='autoSimulationSwitch'> Automate Simulation</mat-slide-toggle>
   <div class="button-group">
 <!--    <mat-form-field>-->
 <!--      <mat-label>Favorite food</mat-label>-->

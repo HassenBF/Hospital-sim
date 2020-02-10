@@ -18,7 +18,8 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
   controlPanelForm: FormGroup;
   autoRefreshInterval = environment.autoRefreshInterval;
   autoSimToggleSubscription: Subscription;
-  drugList = AVAILABLE_DRUGS_LIST
+  drugList = AVAILABLE_DRUGS_LIST;
+
 
   constructor(private fb: FormBuilder) {
   }

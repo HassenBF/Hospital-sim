@@ -9,7 +9,7 @@ export class HistoryService {
 
   constructor() { }
 
-  readonly historySize = environment.historyLength;
+  public historySize = environment.historyLength;
 
    parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients: PatientsRegister, usedDrugs: Drug[]) {
      const simulation = {usedDrugs: [], results: []};

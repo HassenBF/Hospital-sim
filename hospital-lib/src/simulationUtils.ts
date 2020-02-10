@@ -86,8 +86,7 @@ export class SimulationUtils {
                     totalNbOfPatients += preTreatmentPatients[patientState];
                     preTreatmentPatients[patientState] = 0;
                     return totalNbOfPatients;
-                }
-                , 0);
+                }, 0);
         return preTreatmentPatients
     }
 
