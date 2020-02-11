@@ -10,8 +10,8 @@
     <div class="column">
       <div class="flex-row" *ngFor="let results of simulation.results">
         <div class="flex-cell" role="cell">{{fullHealthStateNames[results.healthState]}}</div>
-        <div class="flex-cell" role="cell">{{results.preTreatment}}</div>
-        <div class="flex-cell" role="cell">{{results.postTreatment}}</div>
+        <div class="flex-cell" role="cell" [ngClass]="{'zero-patients':results.preTreatment == 0}">{{results.preTreatment}}</div>
+        <div class="flex-cell" role="cell" [ngClass]="{'zero-patients':results.postTreatment == 0}">{{results.postTreatment}}</div>
       </div>
     </div>
     <div class="flex-row rowspan first">

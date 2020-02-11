@@ -17,8 +17,8 @@ export class HistoryService {
        simulation.results.push(
          {
            healthState: state,
-           preTreatment: preTreatmentPatients[state] ? preTreatmentPatients[state] : '-',
-           postTreatment: postTreatmentPatients[state] ? postTreatmentPatients[state] : '-',
+           preTreatment: preTreatmentPatients[state] ? preTreatmentPatients[state] : 0,
+           postTreatment: postTreatmentPatients[state] ? postTreatmentPatients[state] : 0,
          });
      });
      simulation.usedDrugs = usedDrugs;

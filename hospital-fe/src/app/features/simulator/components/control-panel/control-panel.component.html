@@ -1,9 +1,9 @@
 <div class="control-panel-container" [formGroup]=controlPanelForm>
   <div class="button-group">
-    <button [disabled]="matSlideToggle.checked" class="control-button" color="primary" mat-flat-button
+    <button [disabled]="matSlideToggle.checked" class="control-button" color="primary" mat-raised-button
             (click)="getSimulationData()"> Get simulation data
     </button>
-    <button [disabled]="matSlideToggle.checked" class="control-button" color="warn" mat-flat-button
+    <button [disabled]="matSlideToggle.checked" class="control-button" color="warn" mat-raised-button
             (click)="startSimulation()"> Administer Drugs
     </button>
   </div>
@@ -12,35 +12,35 @@
   <div class="button-group">
 
 
-    <!--    </mat-form-field>-->
-    <div class="control-panel-container">
-      <div class="button-group">
-        <mat-form-field>
-          <mat-label>Health states</mat-label>
-          <mat-select formControlName="healthState">
-            <mat-option *ngFor="let state of healthStatesList" [value]="state">{{fullHealthStateNames[state]}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+<!--    &lt;!&ndash;    </mat-form-field>&ndash;&gt;-->
+<!--    <div class="control-panel-container">-->
+<!--      <div class="button-group">-->
+<!--        <mat-form-field>-->
+<!--          <mat-label>Health states</mat-label>-->
+<!--          <mat-select formControlName="healthState">-->
+<!--            <mat-option *ngFor="let state of healthStatesList" [value]="state">{{fullHealthStateNames[state]}}</mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
 
-        <mat-form-field class="example-full-width">
-          <mat-label>number of patient</mat-label>
-          <input matInput placeholder="0" formControlName="nbOfPatients">
-        </mat-form-field>
+<!--        <mat-form-field class="example-full-width">-->
+<!--          <mat-label>number of patient</mat-label>-->
+<!--          <input matInput placeholder="0" formControlName="nbOfPatients">-->
+<!--        </mat-form-field>-->
 
-        <button class="control-button" color="primary" mat-flat-button (click)="addPatients()"> Add patients
-        </button>
-      </div>
+<!--        <button class="control-button" color="primary" mat-flat-button (click)="addPatients()"> Add patients-->
+<!--        </button>-->
+<!--      </div>-->
 
-      <div class="button-group">
-        <mat-form-field>
-          <mat-label>Toppings</mat-label>
-          <mat-select formControlName="drugs" multiple>
-            <mat-option *ngFor="let drug of drugList" [value]="drug">{{fullDrugNames[drug]}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button class="control-button" color="warn" mat-flat-button (click)="addDrugs()"> add drugs</button>
-      </div>
-    </div>
-  </div>
+<!--      <div class="button-group">-->
+<!--        <mat-form-field>-->
+<!--          <mat-label>Toppings</mat-label>-->
+<!--          <mat-select formControlName="drugs" multiple>-->
+<!--            <mat-option *ngFor="let drug of drugList" [value]="drug">{{fullDrugNames[drug]}}</mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
+<!--        <button class="control-button" color="warn" mat-flat-button (click)="addDrugs()"> add drugs</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 </div>
 
