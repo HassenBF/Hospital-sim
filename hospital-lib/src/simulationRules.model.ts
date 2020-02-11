@@ -14,7 +14,7 @@ export enum AvailableDrugs {
 }
 
 export type State = 'H'|'F'|'T'|'D'|'X';
-export type Drug = 'As'|'An'|'I'|'P';
+export type Drug = 'As'|'An'|'I'|'P'|'';
 
 export interface DrugsCombination {
     drugsCombination: Drug [],
@@ -27,11 +27,11 @@ export interface Treatment extends DrugsCombination{
 export interface HealthStateRulesSet {
     patientInitialState: State,
     treatments: Treatment [],
-    mandatoryTreatments?: DrugsCombination []  // result in death if not administrated
+    mandatoryTreatments?: DrugsCombination []  // result in death if NOT administrated
 }
 
 
 export interface HealthStatesAndDrugInteractionsRules {
-    lethalDrugInteractions:DrugsCombination[], // contains drug combinations that cause death if given to a patient
-    healthStatesRuleSets:HealthStateRulesSet[]
+    lethalDrugInteractions:DrugsCombination[], // Contains drug combinations that cause death if given to a patient
+    healthStatesRulesSets:HealthStateRulesSet[]
 }

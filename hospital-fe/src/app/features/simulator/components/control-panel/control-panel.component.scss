@@ -3,7 +3,6 @@ $disabled-secondary: #a0a0a0;
 $disabled-text: #d9d9d9;
 $row-bg: #f4f2f1;
 
-
 .control-panel-container {
   width: 100%;
   padding: 20px;
@@ -13,11 +12,7 @@ $row-bg: #f4f2f1;
   align-items: center;
   flex-wrap: wrap;
   flex-direction: row;
-  align-content: start
-}
-
-::ng-deep{
-
+  align-content: flex-start;
 }
 
 .control-button{
@@ -29,6 +24,6 @@ $row-bg: #f4f2f1;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: start;
+  justify-content: flex-start;
   align-content: space-around;
 }

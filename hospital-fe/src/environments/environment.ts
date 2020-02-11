@@ -6,5 +6,5 @@ export const environment = {
   production: false,
   baseUrl: 'http://127.0.0.1:7200',
   historyLength: 10,
-  autoRefreshInterval: 2 * 1000
+  autoRefreshInterval: 30 * 1000
 };

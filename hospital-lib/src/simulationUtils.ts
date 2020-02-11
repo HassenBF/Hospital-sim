@@ -11,30 +11,29 @@ import {PatientsRegister} from './patientsRegister';
 export class SimulationUtils {
 
     /**
-     * Gets index of drugs combination rules corresponding to the healthState in parameters
+     * Gets index of the right object in the rules array
      *
      * @returns {number} -1 if not found , index number if found
      * @param healthState
-     * @param healthStatesRuleSets => array containing drug interaction rules for every health state
+     * @param healthStatesRulesSets => array containing rules object for every health state
      */
-    static getCorrespondingRulesIndex(healthState: State, healthStatesRuleSets: HealthStateRulesSet[]): number {
-        return healthStatesRuleSets.findIndex((healthConditionTreatment) => {
-            return healthConditionTreatment.patientInitialState === healthState;
+    static getCorrespondingRulesIndex(healthState: State, healthStatesRulesSets: HealthStateRulesSet[]): number {
+        return healthStatesRulesSets.findIndex((rulesSet) => {
+            return rulesSet.patientInitialState === healthState;
         });
     }
 
     /**
-     * check if there's a drug combination rule that matches with the used drugs
+     * check if there's a drug combination that matches with the used drugs
      *
-     * @returns {number} -1 if not found , index of matching rule if found
-     * @param drugsCombinationRules => drug combination rules for a specific health state
+     * @returns {boolean} true if found
+     * @param drugsCombination => Predefined combination of drugs
      * @param usedDrugs =>  drugs used in current simulation
      */
 
-    static isThereMatchingRules(drugsCombinationRules: Drug[], usedDrugs?: Drug[]): boolean {
-        return drugsCombinationRules.every((drugInRuleSet) => {
-            //console.log(`does ${drugInRuleSet} exist in ${this.usedDrugs} `, this.usedDrugs.indexOf(drugInRuleSet) >= 0);
-            return usedDrugs.indexOf(drugInRuleSet) >= 0;
+    static isThereMatchingRules(drugsCombination: Drug[], usedDrugs?: Drug[]): boolean {
+        return drugsCombination.every((drug) => {
+            return usedDrugs.indexOf(drug) >= 0;
         });
 
     }
@@ -47,21 +46,19 @@ export class SimulationUtils {
 
     static isLethalDrugCombination(usedDrugs: Drug[], lethalDrugCombinations: DrugsCombination[]): boolean {
         return lethalDrugCombinations.some((treatment) => {
-            //console.log('current ruleSet',treatment);
             return this.isThereMatchingRules(treatment.drugsCombination, usedDrugs);
         });
     }
 
-
     /**
      *
-     * @returns {State} Health state after treatment with drugs, could be the same or different
-     * @param healthStateRulesSet => rulesSet for a specific health state
+     * @returns {State} Patients' Health state after applying the drugs, could be the same or different
+     * @param healthStateRulesSet => object with rules for a specefic health state
      * @param usedDrugs
      */
     static getPostTreatmentHealthState(healthStateRulesSet: HealthStateRulesSet, usedDrugs: Drug[]): State {
-        const treatmentResult = healthStateRulesSet.treatments.find((treatment, index) => {
-            return this.isThereMatchingRules(treatment.drugsCombination, usedDrugs);
+        const treatmentResult = healthStateRulesSet.treatments.find((drugTreatment) => {
+            return this.isThereMatchingRules(drugTreatment.drugsCombination, usedDrugs);
         });
         if (treatmentResult) {
             return treatmentResult.result
@@ -78,7 +75,7 @@ export class SimulationUtils {
      * Generate an object with all dead patients
      *
      * @returns {PatientsRegister} Object with post treatment patients
-     * @param preTreatmentPatients
+     * @param preTreatmentPatients => non treated patients
      */
     static everyoneIsDead(preTreatmentPatients: PatientsRegister): PatientsRegister {
         preTreatmentPatients[HealthStates.DEAD] = Object.keys(preTreatmentPatients)
@@ -124,8 +121,8 @@ export class SimulationUtils {
 
         Object.keys(postTreatmentPatients).forEach((preTreatmentHealthState: State) => {
             // Index of rules (in rules table) corresponding to current patients healthState.
-            const healthStateRulesIndex = SimulationUtils.getCorrespondingRulesIndex(preTreatmentHealthState, simRules.healthStatesRuleSets);
-            const correspondingRuleSet = simRules.healthStatesRuleSets[healthStateRulesIndex];
+            const healthStateRulesIndex = SimulationUtils.getCorrespondingRulesIndex(preTreatmentHealthState, simRules.healthStatesRulesSets);
+            const correspondingRuleSet = simRules.healthStatesRulesSets[healthStateRulesIndex];
             const postTreatmentHealthState = SimulationUtils.getPostTreatmentHealthState(correspondingRuleSet, usedDrugs);
             // building post treatment patients object
             if (postTreatmentHealthState !== preTreatmentHealthState) {
@@ -133,7 +130,6 @@ export class SimulationUtils {
                     preTreatmentHealthState, postTreatmentHealthState
                 )
             }
-            console.log(postTreatmentPatients);
         });
         return postTreatmentPatients;
     }

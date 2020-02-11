@@ -6,7 +6,7 @@ export class SimulationRules {
         lethalDrugInteractions: [
             {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
         ],
-        healthStatesRuleSets: [
+        healthStatesRulesSets: [
             {
                 patientInitialState: HealthStates.HEALTHY,
                 treatments: [

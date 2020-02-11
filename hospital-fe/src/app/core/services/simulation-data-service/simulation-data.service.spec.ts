@@ -10,48 +10,36 @@ import {
 import {of} from 'rxjs';
 
 describe('SimulationDataService', () => {
-  let service: SimulationDataService;
-
-  const mockSimulationDataService = {
-    getPatients: function () {
-      return of(MOCK_RAW_PATIENTS_REGISTER);
-    },
-    getDrugs: function () {
-      return of(MOCK_RAW_DRUGS_LIST);
-    },
-  };
+  let simulationDataService: SimulationDataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       providers: [
-        {provide: SimulationDataService, useValue: mockSimulationDataService}
+        SimulationDataService
       ]
     });
-    service = TestBed.get(SimulationDataService);
+    simulationDataService = TestBed.get(SimulationDataService);
   });
 
-
   it('should be created', () => {
-    const service: SimulationDataService = TestBed.get(SimulationDataService);
-    expect(service).toBeTruthy();
+    expect(simulationDataService).toBeTruthy();
   });
 
   it('should return patients list', async () => {
-    mockSimulationDataService.getPatients().subscribe((patients) => {
-      expect(patients).toEqual(MOCK_RAW_PATIENTS_REGISTER);
-    });
+    spyOn(simulationDataService, 'getPatients').and.returnValue(of(MOCK_RAW_PATIENTS_REGISTER));
+    simulationDataService.getPatients();
+    expect(simulationDataService.getPatients).toHaveBeenCalled();
   });
 
   it('should return drugs list', async () => {
-    mockSimulationDataService.getDrugs().subscribe((drugs) => {
-      expect(drugs).toEqual(MOCK_RAW_DRUGS_LIST);
-    });
+    spyOn(simulationDataService, 'getDrugs').and.returnValue(of(MOCK_RAW_DRUGS_LIST));
+    simulationDataService.getDrugs();
+    expect(simulationDataService.getDrugs).toHaveBeenCalled();
   });
 
-  it ('should parse patients string to a patients register',()=> {
-
-    const parsedPatientsRegister = service.parseToPatientsRegister(MOCK_RAW_PATIENTS_REGISTER,',');
+  it ('should parse patients string to a patients register', () => {
+    const parsedPatientsRegister = simulationDataService.parseToPatientsRegister(MOCK_RAW_PATIENTS_REGISTER, ',');
     expect(parsedPatientsRegister).toEqual(MOCK_PARSED_PATIENTS_REGISTER);
-  })
+  });
 });

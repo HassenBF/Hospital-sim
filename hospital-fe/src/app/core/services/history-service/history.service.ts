@@ -8,7 +8,6 @@ import {Drug, PatientsRegister, SimulationResults, State} from '../../../shared/
 export class HistoryService {
 
   constructor() { }
-
   public historySize = environment.historyLength;
 
    parseSimulationDataIntoTable(preTreatmentPatients: PatientsRegister, postTreatmentPatients: PatientsRegister, usedDrugs: Drug[]) {

@@ -15,52 +15,42 @@ import {HistoryService} from '../../../../core/services/history-service/history.
 export class MainDashboardComponent implements OnInit {
 
   private readonly listSeparator = ',';
-  private preTreatmentPatients: PatientsRegister = {};
-  private postTreatmentPatients: PatientsRegister = {};
-  private usedDrugs: Drug[] = [];
-  private simulationHistory = [];
-  private manualUserInputOngoing =  false;
+  preTreatmentPatients: PatientsRegister = {};
+  postTreatmentPatients: PatientsRegister = {};
+  usedDrugs: Drug[] = [];
+  simulationHistory = [];
 
   constructor(private simulationService: SimulationDataService,
-              private historyService:HistoryService) {}
+              private historyService: HistoryService) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
-  getPatients(): Observable<PatientsRegister> {
+  fetchPatients(): Observable<PatientsRegister> {
     return this.simulationService.getPatients()
       .pipe(
         map((patients) => this.simulationService.parseToPatientsRegister(patients, this.listSeparator) as PatientsRegister)
       );
   }
 
-  getDrugs(): Observable<Drug[]> {
+  fetchDrugs(): Observable<Drug[]> {
     return this.simulationService.getDrugs()
       .pipe(
         map((drugsString) => drugsString.split(this.listSeparator) as Drug[])
       );
   }
 
-  public manualPatientAdd(patients : PatientsRegister){
-    if (!this.manualUserInputOngoing) {
-      this.simulationHistory
-        .push(this.historyService.parseSimulationDataIntoTable(patients, this.postTreatmentPatients, this.usedDrugs));
-    }
-
-    if (this.manualUserInputOngoing){
-      this.simulationHistory[this.simulationHistory.length - 1] =
-        this.historyService.parseSimulationDataIntoTable(patients, this.postTreatmentPatients, this.usedDrugs);
-    }
-    this.manualUserInputOngoing= true;
-    console.log("dashboard", patients);
-
-    return this.preTreatmentPatients
+  getPatientsAndDrugs(): Observable<[PatientsRegister, Drug[]]> {
+    return forkJoin([
+      this.fetchPatients(),
+      this.fetchDrugs(),
+    ]);
   }
 
   public getSimulationData(isAutoSimulationActivated?: boolean) {
-    forkJoin([
-      this.getPatients(),
-      this.getDrugs(),
-    ]).subscribe(([patients, drugs]) => {
+    this.getPatientsAndDrugs()
+      .subscribe(([patients, drugs]) => {
       this.postTreatmentPatients = {};
       this.preTreatmentPatients = patients;
       this.usedDrugs = drugs;
@@ -74,8 +64,8 @@ export class MainDashboardComponent implements OnInit {
       }
     });
   }
+
   public runSimulation(): void {
-    this.manualUserInputOngoing = false;
     const quarantine = new Quarantine(this.preTreatmentPatients);
     quarantine.setDrugs(this.usedDrugs);
     quarantine.wait40Days();
@@ -83,6 +73,5 @@ export class MainDashboardComponent implements OnInit {
     // Append simulation results to simulation data .
     this.simulationHistory[this.simulationHistory.length - 1] =
       this.historyService.parseSimulationDataIntoTable(this.preTreatmentPatients, this.postTreatmentPatients, this.usedDrugs);
-    console.log('simulationHistory', JSON.stringify(this.simulationHistory));
   }
 }

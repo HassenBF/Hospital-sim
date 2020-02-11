@@ -5,7 +5,6 @@ $row-bg: #f5f5f5;
 $zero-case: #ada8a8;
 $table-text-color:#4a4b4c;
 
-
 div {
   box-sizing: border-box;
 }
@@ -38,7 +37,7 @@ div {
     border-color: $table-header-border;
   }
   &.row {
-    animation: blinker 1s linear ;
+    animation: blinker 0.5s linear ;
   }
   &.row:nth-child(odd) .flex-row {
     background: $row-bg;
@@ -50,7 +49,7 @@ div {
 
 @keyframes blinker {
   5% {
-    opacity: 0.25;
+    opacity: 0.3;
   }
 }
 
@@ -124,7 +123,6 @@ div {
       width: 100%;
     }
   }
-
   .column {
     width: 100%;
   }

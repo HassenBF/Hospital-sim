@@ -5,7 +5,6 @@ import {SimulationUtils} from './simulationUtils';
 
 export class Quarantine {
 
-    //private preTreatmentPatients :PatientsRegister = {X:2,T:3,D:2,H:2};
     private postTreatmentPatients: PatientsRegister = {};
     private usedDrugs: Drug[] = [];
     private readonly SIM_RULES = SimulationRules.rules;
@@ -26,7 +25,6 @@ export class Quarantine {
         }
     }
     public report(): PatientsRegister {
-        console.log('post treatment', this.postTreatmentPatients);
         return this.postTreatmentPatients;
     }
 

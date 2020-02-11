@@ -7,19 +7,11 @@ import {AVAILABLE_DRUGS, HEALTH_STATES} from '../../../../core/full-names.const'
   templateUrl: './simulations-history.component.html',
   styleUrls: ['./simulations-history.component.scss']
 })
-export class SimulationsHistoryComponent implements OnInit, OnChanges {
+export class SimulationsHistoryComponent {
 
   @Input() simulationHistory: SimulationResults[] ;
   fullHealthStateNames = HEALTH_STATES;
   fullDrugNames = AVAILABLE_DRUGS;
 
-
   constructor() { }
-
-  ngOnInit() {
-  }
-
-  ngOnChanges(): void {
-    console.log(this.simulationHistory);
-  }
 }

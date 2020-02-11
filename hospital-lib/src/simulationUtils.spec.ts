@@ -5,13 +5,13 @@ import {SimulationUtils} from './simulationUtils';
 
 @TestFixture()
 export class SimulationUtilsTest {
-
+    // MOCKS USED FOR TESTING
     private quarantine: Quarantine;
-    private RULES_MOCK : HealthStatesAndDrugInteractionsRules = {
+    private RULES_MOCK: HealthStatesAndDrugInteractionsRules = {
         lethalDrugInteractions: [
             {drugsCombination: [AvailableDrugs.ASPIRIN, AvailableDrugs.PARACETAMOL]}
         ],
-        healthStatesRuleSets: [
+        healthStatesRulesSets: [
             {
                 patientInitialState: HealthStates.HEALTHY,
                 treatments: [
@@ -75,29 +75,22 @@ export class SimulationUtilsTest {
     private preTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
     private postTreatmentPatients = {F: 1, H: 2, D: 3, T: 1, X: 0};
 
-    @Setup
-    public setup() {
-        this.quarantine = new Quarantine({
-            F: 1, H: 2, D: 3, T: 1, X: 0
-        });
-    }
-
     @Test()
     public getCoorespondingRulesIndex(): void {
-        // There is a rule set corresponding to that healthState
-        let correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('T', this.RULES_MOCK.healthStatesRuleSets);
+        // There is a rules set corresponding to that healthState
+        let correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('T', this.RULES_MOCK.healthStatesRulesSets);
         Expect(correspondingRulesIndex).toEqual(2);
-        // There's no rule set corresponding to that healthState
-        correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('X', this.RULES_MOCK.healthStatesRuleSets);
+        // There's no rules set corresponding to that healthState
+        correspondingRulesIndex = SimulationUtils.getCorrespondingRulesIndex('X', this.RULES_MOCK.healthStatesRulesSets);
         Expect(correspondingRulesIndex).toEqual(-1);
     }
 
     @Test()
     public isThereMatchingRules(): void {
-        // There's no drug combination rule that matches with the used Drugs
+        // There's no drug combinations that matches with the used Drugs
         let doesRuleExist = SimulationUtils.isThereMatchingRules(this.insulinAntibioticRule.drugsCombination, this.usedDrugs);
         Expect(doesRuleExist).toEqual(false);
-        // There's a drug combination rule that matches with the used Drugs
+        // There's a drug combinations  that matches with the used Drugs
         doesRuleExist = SimulationUtils.isThereMatchingRules(this.paracetamolRule.drugsCombination, this.usedDrugs);
         Expect(doesRuleExist).toEqual(true);
     }
@@ -130,7 +123,6 @@ export class SimulationUtilsTest {
 
     @Test()
     public everyoneIsDead(): void {
-        // Patient's state changed to healthy
         let deadPatients = SimulationUtils.everyoneIsDead({...this.preTreatmentPatients});
         Expect(deadPatients).toEqual({F: 0, H: 0, D: 0, T: 0, X: 7});
     }
@@ -138,7 +130,7 @@ export class SimulationUtilsTest {
     @Test()
     public switchPatientsState(): void {
         let postTreatmentPatients =
-            SimulationUtils.switchPatientsState({...this.preTreatmentPatients},{...this.postTreatmentPatients}, 'H', 'F');
+            SimulationUtils.switchPatientsState({...this.preTreatmentPatients}, {...this.postTreatmentPatients}, 'H', 'F');
         Expect(postTreatmentPatients).toEqual({F: 3, H: 0, D: 3, T: 1, X: 0});
 
     }
